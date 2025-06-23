@@ -1,4 +1,4 @@
-from .pages.product_page import ProductPage
+from pages.product_page import ProductPage
 from .pages.basket_page import BasketPage
 
 def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
