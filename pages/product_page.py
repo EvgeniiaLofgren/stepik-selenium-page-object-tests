@@ -1,19 +1,30 @@
+from selenium.webdriver.common.by import By
 from .base_page import BasePage
-from .locators import ProductPageLocators
 
 class ProductPage(BasePage):
+    PRODUCT_NAME = (By.CSS_SELECTOR, "div.product_main > h1")
+    PRODUCT_PRICE = (By.CSS_SELECTOR, "div.product_main .price_color")
+    ADD_TO_BASKET_BUTTON = (By.CSS_SELECTOR, "button.btn-add-to-basket")
+    SUCCESS_MESSAGE_PRODUCT_NAME = (By.CSS_SELECTOR, "#messages div.alertinner strong")
+    BASKET_TOTAL_PRICE = (By.CSS_SELECTOR, ".basket-mini")
+
+    def get_product_name(self):
+        return self.browser.find_element(*self.PRODUCT_NAME).text
+
+    def get_product_price(self):
+        return self.browser.find_element(*self.PRODUCT_PRICE).text
+
     def add_product_to_basket(self):
-        btn = self.browser.find_element(*ProductPageLocators.ADD_TO_BASKET)
-        btn.click()
+        self.browser.find_element(*self.ADD_TO_BASKET_BUTTON).click()
 
-    def should_be_correct_product_added(self):
-        product_name = self.browser.find_element(*ProductPageLocators.PRODUCT_NAME).text
-        added_product_name = self.browser.find_element(*ProductPageLocators.MESSAGE_PRODUCT_ADDED).text
-        assert product_name == added_product_name, \
-            f"Expected '{product_name}', but got '{added_product_name}'"
+    def should_be_correct_product_name_in_message(self, product_name):
+        message_name = self.browser.find_element(*self.SUCCESS_MESSAGE_PRODUCT_NAME).text
+        assert message_name == product_name, (
+            f"Expected product name '{product_name}' but got '{message_name}'"
+        )
 
-    def should_be_correct_basket_total(self):
-        product_price = self.browser.find_element(*ProductPageLocators.PRODUCT_PRICE).text
-        basket_total = self.browser.find_element(*ProductPageLocators.MESSAGE_BASKET_TOTAL).text
-        assert product_price == basket_total, \
-            f"Expected basket total '{product_price}', but got '{basket_total}'"
+    def should_be_correct_basket_price(self, product_price):
+        basket_text = self.browser.find_element(*self.BASKET_TOTAL_PRICE).text
+        assert product_price in basket_text, (
+            f"Expected basket price to include '{product_price}', but got '{basket_text}'"
+        )
