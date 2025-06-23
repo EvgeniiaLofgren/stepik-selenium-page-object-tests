@@ -7,5 +7,6 @@ def browser():
     options = Options()
     options.add_argument("--start-maximized")
     browser = webdriver.Chrome(options=options)
+    browser.implicitly_wait(10)  # добавлено ожидание
     yield browser
     browser.quit()
