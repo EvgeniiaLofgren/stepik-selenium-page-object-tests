@@ -1,7 +1,5 @@
+from selenium.common.exceptions import NoSuchElementException
 from .locators import BasePageLocators
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 class BasePage():
     def __init__(self, browser, url, timeout=10):
@@ -19,14 +17,9 @@ class BasePage():
             return False
         return True
 
-    def is_not_element_present(self, how, what, timeout=4):
-        try:
-            WebDriverWait(self.browser, timeout).until(
-                EC.presence_of_element_located((how, what))
-            )
-        except TimeoutException:
-            return True  # Элемент не появился за время ожидания — это и есть нужный результат
-        return False  # Элемент появился — значит условие "не присутствует" не выполнено
+    def should_be_authorized_user(self):
+        assert self.is_element_present(*BasePageLocators.USER_ICON), \
+            "User icon is not presented, probably unauthorised user"
 
     def go_to_basket_page(self):
         basket_link = self.browser.find_element(*BasePageLocators.BASKET_LINK)
