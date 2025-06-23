@@ -1,30 +1,33 @@
-from selenium.webdriver.common.by import By
-from .base_page import BasePage
+import pytest
+from pages.product_page import ProductPage
+from selenium.common.exceptions import NoAlertPresentException
+import math
 
-class ProductPage(BasePage):
-    PRODUCT_NAME = (By.CSS_SELECTOR, "div.product_main > h1")
-    PRODUCT_PRICE = (By.CSS_SELECTOR, "div.product_main .price_color")
-    ADD_TO_BASKET_BUTTON = (By.CSS_SELECTOR, "button.btn-add-to-basket")
-    SUCCESS_MESSAGE_PRODUCT_NAME = (By.CSS_SELECTOR, "#messages div.alertinner strong")
-    BASKET_TOTAL_PRICE = (By.CSS_SELECTOR, ".basket-mini")
-
-    def get_product_name(self):
-        return self.browser.find_element(*self.PRODUCT_NAME).text
-
-    def get_product_price(self):
-        return self.browser.find_element(*self.PRODUCT_PRICE).text
-
-    def add_product_to_basket(self):
-        self.browser.find_element(*self.ADD_TO_BASKET_BUTTON).click()
-
-    def should_be_correct_product_name_in_message(self, product_name):
-        message_name = self.browser.find_element(*self.SUCCESS_MESSAGE_PRODUCT_NAME).text
-        assert message_name == product_name, (
-            f"Expected product name '{product_name}' but got '{message_name}'"
-        )
-
-    def should_be_correct_basket_price(self, product_price):
-        basket_text = self.browser.find_element(*self.BASKET_TOTAL_PRICE).text
-        assert product_price in basket_text, (
-            f"Expected basket price to include '{product_price}', but got '{basket_text}'"
-        )
+@pytest.mark.parametrize('link', [
+    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0",
+    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer1",
+    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer2",
+    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer3",
+    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer4",
+    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer5",
+    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer6",
+    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer7",
+    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer8",
+    pytest.param(
+        "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer9",
+        marks=pytest.mark.xfail(reason="Известный баг при promo=offer9")
+    ),
+])
+def test_guest_can_add_product_to_basket(browser, link):
+    page = ProductPage(browser, link)
+    page.open()
+    page.add_product_to_basket()
+    page.solve_quiz_and_get_code()
+    
+    product_name = page.get_product_name()
+    success_message = page.get_success_message()
+    assert product_name == success_message, "Название товара в сообщении не совпадает с добавленным товаром"
+    
+    product_price = page.get_product_price()
+    basket_price = page.get_basket_total()
+    assert product_price == basket_price, "Цена товара не совпадает со стоимостью корзины"
