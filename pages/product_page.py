@@ -1,33 +1,43 @@
-import pytest
-from pages.product_page import ProductPage
-from selenium.common.exceptions import NoAlertPresentException
-import math
+from selenium.webdriver.common.by import By
+from .base_page import BasePage
 
-@pytest.mark.parametrize('link', [
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0",
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer1",
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer2",
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer3",
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer4",
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer5",
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer6",
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer7",
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer8",
-    pytest.param(
-        "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer9",
-        marks=pytest.mark.xfail(reason="Известный баг при promo=offer9")
-    ),
-])
-def test_guest_can_add_product_to_basket(browser, link):
-    page = ProductPage(browser, link)
-    page.open()
-    page.add_product_to_basket()
-    page.solve_quiz_and_get_code()
+class ProductPage(BasePage):
+    ADD_TO_BASKET_BUTTON = (By.CSS_SELECTOR, ".btn-add-to-basket")
+    PRODUCT_NAME = (By.CSS_SELECTOR, ".product_main h1")
+    PRODUCT_PRICE = (By.CSS_SELECTOR, ".product_main .price_color")
+    SUCCESS_MESSAGE = (By.CSS_SELECTOR, "#messages .alert-success .alertinner strong")
+    BASKET_TOTAL = (By.CSS_SELECTOR, ".basket-mini")
     
-    product_name = page.get_product_name()
-    success_message = page.get_success_message()
-    assert product_name == success_message, "Название товара в сообщении не совпадает с добавленным товаром"
+    def add_product_to_basket(self):
+        self.browser.find_element(*self.ADD_TO_BASKET_BUTTON).click()
     
-    product_price = page.get_product_price()
-    basket_price = page.get_basket_total()
-    assert product_price == basket_price, "Цена товара не совпадает со стоимостью корзины"
+    def get_product_name(self):
+        return self.browser.find_element(*self.PRODUCT_NAME).text
+    
+    def get_success_message(self):
+        return self.browser.find_element(*self.SUCCESS_MESSAGE).text
+    
+    def get_product_price(self):
+        return self.browser.find_element(*self.PRODUCT_PRICE).text
+    
+    def get_basket_total(self):
+        basket_text = self.browser.find_element(*self.BASKET_TOTAL).text
+        # Например, текст: "Basket total: £9.99"
+        # Нужно извлечь цену из текста:
+        return basket_text.split("£")[-1].strip()
+    
+    def solve_quiz_and_get_code(self):
+        import math
+        from selenium.common.exceptions import NoAlertPresentException
+        alert = self.browser.switch_to.alert
+        x = alert.text.split(" ")[2]
+        answer = str(math.log(abs((12 * math.sin(float(x))))))
+        alert.send_keys(answer)
+        alert.accept()
+        try:
+            alert = self.browser.switch_to.alert
+            alert_text = alert.text
+            print(f"Your code: {alert_text}")
+            alert.accept()
+        except NoAlertPresentException:
+            print("No second alert presented")
