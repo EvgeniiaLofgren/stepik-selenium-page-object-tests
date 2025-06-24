@@ -5,11 +5,10 @@ import time
 
 class ProductPage(BasePage):
     def add_to_basket(self):
-        basket_button = self.browser.find_element(*ProductPageLocators.ADD_TO_BASKET_BUTTON)
-        basket_button.click()
+        button = self.browser.find_element(*ProductPageLocators.ADD_TO_BASKET_BUTTON)
+        button.click()
 
     def solve_quiz_and_get_code(self):
-        # Этот метод уже реализован в BasePage, оставь его без изменений
         super().solve_quiz_and_get_code()
 
     def should_be_added_to_basket(self):
