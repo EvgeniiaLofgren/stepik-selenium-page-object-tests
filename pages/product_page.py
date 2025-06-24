@@ -1,20 +1,29 @@
-from pages.base_page import BasePage
+from .base_page import BasePage
+from selenium.webdriver.common.by import By
 from .locators import ProductPageLocators
-from selenium.common.exceptions import NoSuchElementException
+import time
 
 class ProductPage(BasePage):
-    def add_product_to_basket(self):
-        button = self.browser.find_element(*ProductPageLocators.ADD_TO_BASKET)
-        button.click()
+    def add_to_basket(self):
+        basket_button = self.browser.find_element(*ProductPageLocators.ADD_TO_BASKET_BUTTON)
+        basket_button.click()
 
-    def should_be_success_message(self):
-        assert self.is_element_present(*ProductPageLocators.SUCCESS_MESSAGE), \
-            "Success message is not presented, but should be"
+    def solve_quiz_and_get_code(self):
+        # Этот метод уже реализован в BasePage, оставь его без изменений
+        super().solve_quiz_and_get_code()
 
-    def should_not_be_success_message(self):
-        assert self.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE), \
-            "Success message is presented, but should not be"
+    def should_be_added_to_basket(self):
+        product_name = self.browser.find_element(*ProductPageLocators.PRODUCT_NAME).text
+        message_text = self.browser.find_element(*ProductPageLocators.ADDED_MESSAGE).text
+        assert product_name in message_text, "Product name is not in the success message"
 
-    def should_disappear_success_message(self):
-        assert self.is_disappeared(*ProductPageLocators.SUCCESS_MESSAGE), \
-            "Success message did not disappear as expected"
+        product_price = self.browser.find_element(*ProductPageLocators.PRODUCT_PRICE).text
+        basket_price = self.browser.find_element(*ProductPageLocators.BASKET_TOTAL).text
+        assert product_price == basket_price, "Basket total doesn't match product price"
+
+    def go_to_basket(self):
+        basket_link = self.browser.find_element(*ProductPageLocators.VIEW_BASKET_LINK)
+        basket_link.click()
+
+    def should_be_login_link(self):
+        assert self.is_element_present(*ProductPageLocators.LOGIN_LINK), "Login link is not present"
