@@ -1,6 +1,7 @@
 from .base_page import BasePage
 from .locators import LoginPageLocators
 from .locators import MainPageLocators
+from .locators import BasePageLocators
 
 class LoginPage(BasePage):
     def register_new_user(self, email, password):
