@@ -4,7 +4,7 @@ class BasePageLocators():
     LOGIN_LINK = (By.CSS_SELECTOR, "#login_link")
     LOGIN_LINK_INVALID = (By.CSS_SELECTOR, "#login_link_inc")
     USER_ICON = (By.CSS_SELECTOR, ".icon-user")
-    BASKET_LINK = (By.CSS_SELECTOR, ".basket-mini a.btn-default")
+    BASKET_LINK = (By.CSS_SELECTOR, ".basket-mini a.btn")
 
 class MainPageLocators():
     pass  # for future use
