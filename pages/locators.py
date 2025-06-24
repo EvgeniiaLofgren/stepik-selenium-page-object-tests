@@ -7,17 +7,22 @@ class BasePageLocators():
     BASKET_LINK = (By.CSS_SELECTOR, ".basket-mini a.btn-default")
 
 class MainPageLocators():
-    pass  # оставить, если планируется добавить что-то позже
+    pass  # for future use
 
 class LoginPageLocators():
     LOGIN_FORM = (By.CSS_SELECTOR, "#login_form")
     REGISTER_FORM = (By.CSS_SELECTOR, "#register_form")
 
-class ProductPageLocators():
-    ADD_TO_BASKET = (By.CSS_SELECTOR, ".btn-add-to-basket")
-    SUCCESS_MESSAGE = (By.CSS_SELECTOR, ".alert-success")
+class ProductPageLocators:
+    ADD_TO_BASKET_BUTTON = (By.CSS_SELECTOR, ".btn-add-to-basket")
+    PRODUCT_NAME = (By.CSS_SELECTOR, ".product_main h1")
+    ADDED_MESSAGE = (By.CSS_SELECTOR, "#messages .alert-success strong")
+    PRODUCT_PRICE = (By.CSS_SELECTOR, ".product_main .price_color")
+    BASKET_TOTAL = (By.CSS_SELECTOR, ".basket-mini")
+    VIEW_BASKET_LINK = (By.CSS_SELECTOR, ".basket-mini a.btn")
+    LOGIN_LINK = (By.CSS_SELECTOR, "#login_link") 
 
 class BasketPageLocators():
     BASKET_ITEMS = (By.CSS_SELECTOR, ".basket-items")
-    EMPTY_BASKET_TEXT = (By.CSS_SELECTOR, "#content_inner > p")  # текст «Ваша корзина пуста»
+    EMPTY_BASKET_TEXT = (By.CSS_SELECTOR, "#content_inner > p") 
 
