@@ -1,1 +1,37 @@
+stepik-selenium-page-object-tests
+This is a practice project for automated testing using Selenium and Pytest. It was created as part of a Stepik course.
+
+What's in the project
+Tests are written using the Page Object pattern
+
+All page classes are stored in the pages folder
+
+Selectors are stored in a separate locators.py file
+
+How to run the tests
+Install the dependencies:
+
+nginx
+Copy
+Edit
+pip install -r requirements.txt
+Run tests marked with need_review:
+
+arduino
+Copy
+Edit
+pytest -v --tb=line --language=en -m need_review
+Library versions
+pytest==5.1.1
+
+selenium==3.14.0
+
+What is being tested
+Adding a product to the basket
+
+Navigating to the login page
+
+Checking that the basket is empty
+
+Behavior of a guest user and a logged-in user
 
