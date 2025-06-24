@@ -4,6 +4,7 @@ from .locators import ProductPageLocators
 import time
 
 class ProductPage(BasePage):
+    
     def add_to_basket(self):
         button = self.browser.find_element(*ProductPageLocators.ADD_TO_BASKET_BUTTON)
         button.click()
@@ -26,3 +27,7 @@ class ProductPage(BasePage):
 
     def should_be_login_link(self):
         assert self.is_element_present(*ProductPageLocators.LOGIN_LINK), "Login link is not present"
+
+    def go_to_login_page(self):
+        login_link = self.browser.find_element(*BasePageLocators.LOGIN_LINK)
+        login_link.click()
