@@ -20,8 +20,8 @@ class ProductPage(BasePage):
         basket_price = self.browser.find_element(*ProductPageLocators.BASKET_TOTAL).text
         assert product_price == basket_price, "Basket total doesn't match product price"
 
-    def go_to_basket(self):
-        basket_link = self.browser.find_element(*ProductPageLocators.VIEW_BASKET_LINK)
+    def go_to_basket_page(self):
+        basket_link = self.browser.find_element(*BasePageLocators.BASKET_LINK)
         basket_link.click()
 
     def should_be_login_link(self):
